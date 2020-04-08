@@ -1,0 +1,108 @@
+<head>
+  <title>Scratch Game</title>
+
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scratch-card {
+      width: 300px;
+      height: 300px;
+      position: relative;
+      box-shadow: 1px 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .scratch-base,
+    #scratch {
+      cursor: default;
+      height: 300px;
+      width: 300px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: grabbing;
+    }
+
+    .scratch-base {
+      line-height: 60px;
+      text-align: center;
+    }
+
+    #scratch {
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scratch-card">
+    <div
+      id="scratch-base"
+      class="scratch-base"
+      style="
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+      "
+    ></div>
+    <canvas id="scratch" width="300" height="300"></canvas>
+  </div>
+</body>
+
+<!-- <script src="https://www.codehim.com/demo/scratch-card-javascript-html5/js/scratch-card.js"></script> -->
+
+<script>
+  var images = [];
+
+  function deleteArea(props) {
+    const { layerX, layerY } = props;
+    ctx.arc(layerX, layerY, 15, 0, 2 * Math.PI);
+    ctx.save();
+    ctx.clip();
+    ctx.clearRect(layerX - 15, layerY - 15, 30, 30);
+    ctx.restore();
+  }
+
+  var c = document.getElementById("scratch");
+  var ctx = c.getContext("2d");
+  ctx.fillStyle = "red";
+  ctx.fillRect(0, 0, 300, 300);
+
+  c.addEventListener("mousedown", function () {
+    c.addEventListener("mousemove", deleteArea);
+
+    c.addEventListener("mouseup", function () {
+      c.removeEventListener("mousemove", deleteArea);
+    });
+  });
+
+  function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+  }
+
+  function setChance(percentage, imageUrl) {
+    for (let i = 0; i < percentage; i++) {
+      images.push(imageUrl);
+    }
+  }
+
+  setChance(
+    50,
+    "https://www.ematicsolutions.com/wp-content/uploads/2020/04/ematic-logo-horizontal.png"
+  );
+
+  while (images.length < 100) {
+    images.push(
+      "https://img3.stockfresh.com/files/c/chrisdorney/m/61/3385554_stock-photo-better-luck-next-time.jpg"
+    );
+  }
+
+  document.getElementById("scratch-base").style.backgroundImage = `url(${
+    images[getRandomInt(images.length)]
+  })`;
+</script>
